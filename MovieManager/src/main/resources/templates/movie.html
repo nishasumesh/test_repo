@@ -9,82 +9,88 @@
 	</div>
 
 	<div th:if="${login != null}">
-		<div align="left">Welcome <b> <label th:text="${login.name} "></label></b><label th:text="'('+${login.user_id}+')'">)
-		</label></br></br></div>
 		<div align="left">
-			<table border="1">
+			Welcome <b> <label th:text="${login.name} "></label></b></br>
+			</br>
+		</div>
+		<div align="left">
+			<table border="0">
 				<thead>
 					<tr>
-						<!-- <th>Film Name</th>
-						<th>Director</th> -->
-						<th>Watching/Watched</th>
-						
+						<th>Continue watching</th>
+
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:if="${watchList.empty}">
 						<td colspan="2">No Movies Available</td>
 					</tr>
-					<tr th:each="watchData : ${watchList}">
-						<!-- <td><span th:text="${watchData.filmname}"> Movie </span></td>
-						<td><span th:text="${watchData.director}"> Director </span></td> -->
-						<td><iframe width="560" height="315" th:src="@{{url}(url=${watchData.link}, start=${watchData.link})}" frameborder="1" alt="no video attached" allowfullscreen="0"></iframe>
-						</td>		
+					<tr>
+						<td th:each="watchData : ${watchList}"><iframe width="560"
+								height="315"
+								th:src="@{{url}(url=${watchData.link}, start=${watchData.link})}"
+								frameborder="1" alt="no video attached" allowfullscreen="0"></iframe>
+
+						</td>
 					</tr>
+
 				</tbody>
 			</table>
 		</div>
 
 		<div align="left">
-		</br></br>
-			<table border="1">
+			</br>
+			</br>
+			<table border="0">
 				<thead>
 					<tr>
-						<!-- <th>Film Name</th>
-						<th>Director</th> -->
-						<th>Recommendations</th>
-						
+						<th>You may like these</th>
+
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:if="${recommendedList.empty}">
 						<td colspan="2">No Movies Available</td>
 					</tr>
-					<tr th:each="watchRData : ${recommendedList}">
-					<!-- 	<td><span th:text="${watchRData.filmname}"> Movie </span></td>
-						<td><span th:text="${watchRData.director}"> Director </span></td> -->
-						<td><iframe width="560" height="315" th:src="@{{url}(url=${watchRData.link}, start=${watchRData.link})}" frameborder="1" alt="no video attached" allowfullscreen="0"></iframe>
+					<tr>
+					<td th:each="watchRData : ${recommendedList}">
+						<iframe width="560" height="315"
+								th:src="@{{url}(url=${watchRData.link}, start=${watchRData.link})}"
+								frameborder="1" alt="no video attached" allowfullscreen="0"></iframe>
+								</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 
 	</div>
-<div th:if="${login == null}">Welcome User, Please login with valid credentials. <a href="http://localhost:8081/login"> Login Here</a></br></br>
-<div align="left">
+	<div th:if="${login == null}">
+		Welcome User, Please login with valid credentials. <a
+			href="http://localhost:8081/login"> Login Here</a></br>
+		</br>
+		<div align="left">
 			<table border="1">
 				<thead>
 					<tr>
-					<!-- 	<th>Film Name</th>
-						<th>Director</th> -->
-						<th>Recommendations</th>
-						
+						<th>You may like these</th>
+
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:if="${recommendedList.empty}">
 						<td colspan="2">No Movies Available</td>
 					</tr>
-					<tr th:each="watchRData : ${recommendedList}">
-						<!-- <td><span th:text="${watchRData.filmname}"> Movie </span></td>
-						<td><span th:text="${watchRData.director}"> Director </span></td> -->
-					    <td><iframe width="560" height="315" th:src="@{{url}(url=${watchRData.link}, start=${watchRData.link})}" frameborder="1" alt="no video attached" allowfullscreen="0"></iframe>
-						
+					<tr>
+					<td th:each="watchRData : ${recommendedList}">
+					<iframe width="560" height="315"
+								th:src="@{{url}(url=${watchRData.link}, start=${watchRData.link})}"
+								frameborder="1" alt="no video attached" allowfullscreen="0"></iframe>
+								</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-</div>
+	</div>
 
 </body>
 </html>
