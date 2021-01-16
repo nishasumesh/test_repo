@@ -1,0 +1,29 @@
+server:
+  port: 8081
+  server-header: Epsilon Application Server
+  compression:
+   enabled: false
+   min-response-size: 4096
+   mime-types: application/json+fhir,application/json 
+    
+---    
+      
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    jdbcUrl: jdbc:postgresql://localhost:5432/epsilon
+    url: jdbc:postgresql://localhost:5432/epsilon
+    username: cometadmin
+    password: cohere123
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    max-wait: 1000
+    initial-size: 10
+    min-idle: 10
+    max-idle: 10
+    max-active: 50
+    test-on-borrow: true
+    test-on-connect: true
+    log-abandoned: true
+    log-validation-errors: true 
+  
