@@ -29,6 +29,7 @@ public class MovieController {
 
 	@PostMapping("/login")
 	public String greetingSubmit(@ModelAttribute Login login, Model model) {
+		LOGGER.info("inside login post call ... ");
 		UserModel userModel = movieService.checkUser(login.getUsername(), login.getPassword());
 		model.addAttribute("login", userModel.getLogin());
 		model.addAttribute("watchList", userModel.getFilmList());

@@ -2,12 +2,9 @@ package com.cm.movie.service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -19,10 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.cm.movie.mapper.LoginMapper;
+import com.cm.movie.mapper.MovieMapper;
+import com.cm.movie.model.Film;
 import com.cm.movie.model.Login;
 import com.cm.movie.model.UserModel;
-import com.cm.movie.model.Film;
-import com.cm.movie.mapper.*;
 
 @Service
 public class MovieService {
@@ -34,9 +31,9 @@ public class MovieService {
 
 	private static final String getAllFilms = "SELECT language,filmid, filmname, director, actors, category, link, 'notwatched' as status FROM movie.film";
 
-	private static final String getUserFilms = "select film.language as language, film.filmid as filmid, film.filmname as filmname, film.director as director , film.actors as actors, film.category as category, film.link as link, usrflm.status as status from movie.film film inner join  movie.userfilm usrflm on usrflm.filmid =film.filmid where  film.filmid in (select filmid from movie.userfilm where userid=? and status='watching')";
+	private static final String getUserFilms = "select film.language as language, film.filmid as filmid, film.filmname as filmname, film.director as director , film.actors as actors, film.category as category, film.link as link, usrflm.status as status from movie.film film inner join  movie.userfilm usrflm on usrflm.filmid =film.filmid where  film.filmid in (select filmid from movie.userfilm where userid=? and (status='watching' or status='watched'))";
 
-	private static final String getRecommendation = "SELECT language, filmid, filmname, director, actors, category, link, 'recommended' as status FROM movie.film where  actors &&(?::text[]) or category && (?::text[]) or director = ? or language = ?";
+	private static final String getRecommendation = "SELECT language, filmid, filmname, director, actors, category, link, 'recommended' as status FROM movie.film where (filmid != ?) and   (actors &&(?::text[]) or category && (?::text[]) or director = ? or language = ?)";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MovieService.class);
 
@@ -59,10 +56,7 @@ public class MovieService {
 
 	}
 
-	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-		final Set<Object> seen = new HashSet<>();
-		return t -> seen.add(keyExtractor.apply(t));
-	}
+	// Fetch all available movies
 
 	public List<Film> getAllFilms() {
 
@@ -70,35 +64,56 @@ public class MovieService {
 		return filmList;
 	}
 
+	// Fetch all user watched/watching movies
 	public List<Film> getAllUserFilms(String userId) {
 
 		List<Film> filmList = postgresTemplate.query(getUserFilms, new MovieMapper(userId), userId);
 		return filmList;
 	}
 
+	// Fetch all user recommendations, avoid duplicates and watched list data
 	public UserModel getAllUserRecommendations(String userId, UserModel userModel) {
-		List<Film> listWithoutDuplicates = null;
-		List<Film> recommendationList = new ArrayList<Film>();
+		ArrayList<Film> listWithoutDuplicates = null;
+		ArrayList<Film> recommendationList = null;
+		ArrayList<Film> allUserWatchingFilms = null;
 		if (!StringUtils.isEmpty(userId)) {
-			List<Film> allUserWatchingFilms = getAllUserFilms(userId);
+			recommendationList = new ArrayList<Film>();
+			allUserWatchingFilms = (ArrayList) getAllUserFilms(userId);
 			userModel.setFilmList(allUserWatchingFilms);
-			for (Film userFilm : allUserWatchingFilms) {
-				LOGGER.info("Fetching recommendation Movies ... ");
 
+			for (Film userFilm : allUserWatchingFilms) {
+				LOGGER.info("Fetching recommendation Movies ...{} ", userFilm.getFilmid());
 				List<Film> filmRecommdList = postgresTemplate.query(getRecommendation, new MovieMapper(userId),
-						userFilm.getActors(), userFilm.getCategory(), userFilm.getDirector(), userFilm.getLanguage());
+						userFilm.getFilmid(), userFilm.getActors(), userFilm.getCategory(), userFilm.getDirector(),
+						userFilm.getLanguage());
 				recommendationList.addAll(filmRecommdList);
 			}
+
 		} else {
+			recommendationList = new ArrayList<Film>();
 			List<Film> allFilms = getAllFilms();
 			recommendationList.addAll(allFilms);
 
 		}
+
 		if (!recommendationList.isEmpty()) {
 			listWithoutDuplicates = recommendationList.stream()
 					.collect(Collectors.collectingAndThen(
 							Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Film::getFilmid))),
 							ArrayList::new));
+		}
+
+		if (allUserWatchingFilms != null && !allUserWatchingFilms.isEmpty()) {
+			for (Film userFilm : allUserWatchingFilms) {
+
+				Iterator<Film> iterator = listWithoutDuplicates.iterator();
+				while (iterator.hasNext()) {
+					if (iterator.next().getFilmid().equalsIgnoreCase(userFilm.getFilmid())) {
+						iterator.remove();
+					}
+				}
+			}
+
 		}
 		userModel.setAllFilmList(listWithoutDuplicates);
 
