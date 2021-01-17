@@ -10,7 +10,8 @@ Step2 : Create schema and  the  tables
 Step3 : insert data using below queries
 Step4 : Load the application from Git (https://github.com/nishasumesh/test_repo -> MovieManager)
 Step5 : Change the DB credentials in application.yml file
-Step6 : Build and Execute the project (mvn clean install , mvn spring-boot:run)
+Step6 : Change log file path in logback.xml
+Step7 : Build and Execute the project (mvn clean install , mvn spring-boot:run)
 
 
 -- Database: epsilon

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+txt_input {
+	border: transparent;
+}
+</style>
+
+<meta charset="UTF-8">
+<title>Conference Manager</title>
+</head>
+<body>
+
+	<div th:if="${login != null}">
+		<div align="left">
+			Welcome <b> <label th:text="${login.name} "></label></b></br> </br>
+		</div>
+		<div align="left">
+			</br> </br> <label>Day 1</label>
+			<table border="1">
+				<thead>
+					<tr>
+						<th>Event Name</th>
+						<th>Event Start</th>
+						<th>Event End</th>
+						<th>Event Performer</th>
+						<th>Event Section</th>
+						<th>Event Duration</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:if="${trackList_Day1.empty}">
+						<td colspan="2">No data available</td>
+					</tr>
+
+
+					<tr th:each="trackData : ${trackList_Day1}">
+						<td><label th:text="${trackData.eventName} "></label></td>
+						<td><label th:text="${trackData.eventStartTime} "></label></td>
+
+						<td><label th:text="${trackData.eventEndTime} "></label></td>
+
+						<td><label th:text="${trackData.eventPerformer} "></label></td>
+
+						<td><label th:text="${trackData.sectionName} "></label></td>
+						<td><label th:text="${trackData.eventDuration} "></label></td>
+
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div th:if="${login != null}">
+		</br> </br> <label>Day 2</label>
+		<div align="left">
+			<table border="1">
+				<thead>
+					<tr>
+						<th>Event Name</th>
+						<th>Event Start</th>
+						<th>Event End</th>
+						<th>Event Performer</th>
+						<th>Event Section</th>
+						<th>Event Duration</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:if="${trackList_Day2.empty}">
+						<td colspan="2">No data available</td>
+					</tr>
+
+
+					<tr th:each="trackData : ${trackList_Day2}">
+						<td><label th:text="${trackData.eventName} "></label></td>
+						<td><label th:text="${trackData.eventStartTime} "></label></td>
+
+						<td><label th:text="${trackData.eventEndTime} "></label></td>
+
+						<td><label th:text="${trackData.eventPerformer} "></label></td>
+
+						<td><label th:text="${trackData.sectionName} "></label></td>
+						<td><label th:text="${trackData.eventDuration} "></label></td>
+
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div th:if="${login != null}">
+		</br> </br> </br> <label>Day 3</label>
+		<div align="left">
+			<table border="1">
+				<thead>
+					<tr>
+						<th>Event Name</th>
+						<th>Event Start</th>
+						<th>Event End</th>
+						<th>Event Performer</th>
+						<th>Event Section</th>
+						<th>Event Duration</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:if="${trackList_Day3.empty}">
+						<td colspan="2">No data available</td>
+					</tr>
+
+
+					<tr th:each="trackData : ${trackList_Day3}">
+						<td><label th:text="${trackData.eventName} "></label></td>
+						<td><label th:text="${trackData.eventStartTime} "></label></td>
+
+						<td><label th:text="${trackData.eventEndTime} "></label></td>
+
+						<td><label th:text="${trackData.eventPerformer} "></label></td>
+
+						<td><label th:text="${trackData.sectionName} "></label></td>
+						<td><label th:text="${trackData.eventDuration} "></label></td>
+
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<form action="#" th:action="@{/addEvent}" th:object="${track}"
+		method="post">
+		<p>Add an Event</p>
+
+		<table>
+
+			<thead>
+				<tr>
+					<th>Event Name</th>
+					<th>Event Start</th>
+					<th>Event End</th>
+					<th>Event Performer</th>
+					<th>Event Section</th>
+					<th>Event Duration</th>
+					<th>Event Track</th>
+
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><input type="text" th:field="*{eventName}"></td>
+					<td><input type="text" th:field="*{eventStartTime}"></td>
+					<td><input type="text" th:field="*{eventEndTime}"></td>
+					<td><input type="text" th:field="*{eventPerformer}"></td>
+					<td><select th:field="*{sectionName}">
+								<option value="Morning">Morning</option>
+								<option value="Afternoon">Afternoon</option>
+								<option value="Evening">Evening</option>
+							</select>
+							</td>
+					<td><input type="text" th:field="*{eventDuration}"></td>
+					<td>
+						<select th:field="*{dayOfEvent}">
+								<option value="1">Day 1</option>
+								<option value="2">Day 2</option>
+								<option value="3">Day 3</option>
+							</select>
+						</td>
+
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			<input type="submit" value="Submit" /> <input type="reset"
+				value="Reset">
+		</p>
+	</form>
+<div><a href="http://localhost:8082/download" >download <label th:text="${reportPth}"></label></a></div>
+</a>
+</body>
+</html>
