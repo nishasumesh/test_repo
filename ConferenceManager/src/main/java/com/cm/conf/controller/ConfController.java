@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,7 +79,17 @@ public class ConfController {
 
 		Login login = confService.checkUser("nisha", "nisha");
 
-		confService.saveTrack(track); // save data to db
+		if (track.getEventDuration() == 0 || StringUtils.isEmpty(track.getDayOfEvent())
+				|| StringUtils.isEmpty(track.getEventDuration()) || StringUtils.isEmpty(track.getEventEndTime())
+				|| StringUtils.isEmpty(track.getEventName()) || StringUtils.isEmpty(track.getEventPerformer())
+				|| StringUtils.isEmpty(track.getEventStartTime()) || StringUtils.isEmpty(track.getSectionName())) {
+			model.addAttribute("error", "Mandatory data is missing");
+		} else {
+			int saveResponse = confService.saveTrack(track); // save data to db
+			if (saveResponse == 0) {
+				model.addAttribute("error", "Time does not match, Please provide a valid time ");
+			}
+		}
 
 		model.addAttribute("login", login);
 
@@ -88,6 +99,7 @@ public class ConfController {
 		model.addAttribute("trackList_Day1", confService.getAllEvents("1"));
 		model.addAttribute("trackList_Day2", confService.getAllEvents("2"));
 		model.addAttribute("trackList_Day3", confService.getAllEvents("3"));
+
 		return "conf";
 	}
 
@@ -101,8 +113,8 @@ public class ConfController {
 	@GetMapping("/download")
 	public @ResponseBody ResponseEntity<String> confDownload() throws FileNotFoundException {
 		LOGGER.info("Downloading all data from DB to path {}", reportPth);
-	    confService.writeCSVFile(reportPth);
-	    return new ResponseEntity<>("success", HttpStatus.OK);
-		}
-	
+		confService.writeCSVFile(reportPth);
+		return new ResponseEntity<>("success", HttpStatus.OK);
+	}
+
 }

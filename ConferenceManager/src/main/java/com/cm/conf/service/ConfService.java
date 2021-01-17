@@ -51,7 +51,11 @@ public class ConfService {
 	
 	public int saveTrack(Track trackNew) {
 
+		//Check for time availability
+		//duration calculator
+		
 		return postgresTemplate.update(saveDayEvents, UUID.randomUUID().toString(),trackNew.getSectionName(),trackNew.getEventName(),trackNew.getEventStartTime(),trackNew.getEventEndTime(),""+trackNew.getEventDuration(),trackNew.getDayOfEvent(),trackNew.getEventPerformer());
+	
 	}
 
 	public Login checkUser(String username, String password) {

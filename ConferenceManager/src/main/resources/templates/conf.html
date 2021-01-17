@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-txt_input {
-	border: transparent;
-}
-</style>
 
 <meta charset="UTF-8">
 <title>Conference Manager</title>
 </head>
 <body>
 
+<div th:if="${error != null}">
+<label style="color: red;" th:text="${error} ">
+</div>
 	<div th:if="${login != null}">
 		<div align="left">
-			Welcome <b> <label th:text="${login.name} "></label></b></br> </br>
+			Welcome <b> <label th:text="${login.name} "></label></b></br> 
 		</div>
 		<div align="left">
 			</br> </br> <label>Day 1</label>
